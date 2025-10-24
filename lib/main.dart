@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_fitness_application/fitness_calculation.dart';
 import 'landing_page.dart';
-import 'fitness.dart';
+import 'fitness_page.dart';
 // import 'dart:io';
 // import 'package:geolocator/geolocator.dart';
 
@@ -13,9 +14,9 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
+
+
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fitness Tracker',
