@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_fitness_application/fitness_calculation.dart';
+import 'package:mobile_fitness_application/geolocator.dart';
 import 'landing_page.dart';
 import 'fitness_page.dart';
-// import 'dart:io';
-// import 'package:geolocator/geolocator.dart';
+import 'dart:io';
+import 'package:geolocator/geolocator.dart';
 
 
 void main() async {
