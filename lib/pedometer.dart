@@ -14,6 +14,7 @@ void main(){
 }
 
 class MyApp extends StatefulWidget{
+  const MyApp({super.key});
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -22,6 +23,8 @@ class _MyAppState extends State<MyApp> {
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
   String _status = '?' , _steps = '?';
+  int flag = 0;
+  String startSteps = '?';
 
   @override
   void initState() {
@@ -30,29 +33,29 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onStepCount(StepCount event) {
-    print(event);
+    if(flag == 0){
+      startSteps = event.steps.toString();
+      flag = 1;
+    }
     setState(() {
       _steps = event.steps.toString();
+      _steps = (int.parse(_steps) - int.parse(startSteps)).toString();
     });
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event){
-    print(event);
     setState(() {
       _status = event.status;
     });
   }
 
   void onPedestrianStatusError(error){
-    print('onPedestrianStatusError: $error');
     setState(() {
       _status = 'Pedestrian Status not available';
     });
-    print(_status);
   }
 
   void onStepCountError(error) {
-    print('onStepCountError: $error');
     setState(() {
       _steps = 'Step Count not available';
     });
@@ -70,7 +73,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     bool granted = await _checkActivityRecognitionPermission();
     if(!granted){
-      print('App is not working');
+      // print('App is not working');
     }
     _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
     (await _pedestrianStatusStream.listen(onPedestrianStatusChanged))
