@@ -87,7 +87,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Step Tracking'),
+          title: const Text('Pedometer'),
         ),
         body: Center(
           child: Column(
