@@ -34,7 +34,6 @@ dependencies:
   geolocator: ^14.0.2
   permission_handler: ^12.0.1
   shared_preferences: ^2.3.2
-  charts_flutter: ^0.12.0 # could use this or fl_chart for visuals
   intl: ^0.17.0
 
 

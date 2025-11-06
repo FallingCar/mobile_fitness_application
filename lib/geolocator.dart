@@ -1,5 +1,4 @@
 import 'package:geolocator/geolocator.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
 
   /// Might need to implement different ways of getting location based on mobile OS.
@@ -17,7 +16,7 @@ class GeolocatorDistance {
   }
 
 
-  void _beginCalculateDistance() async {
+  void beginCalculateDistance() async {
     int i = 0;
     Position startingPoint = await _determinePosition();
     await for (Position position in Geolocator.getPositionStream(

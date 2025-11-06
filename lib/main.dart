@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'geolocator.dart';
 
 String formatDate(DateTime d){
   return d.toString().substring(0,19);
 }
 
 void main(){
+  GeolocatorDistance ds = GeolocatorDistance();
+  ds.beginCalculateDistance();
+  
   runApp(MyApp());
 }
 
@@ -18,6 +22,8 @@ class MyApp extends StatefulWidget{
 }
 
 class _MyAppState extends State<MyApp> {
+  late GeolocatorDistance ds;
+  late Stream<double> distanceStream;
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
   String _status = '?' , _steps = '?';
@@ -28,6 +34,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
+    ds = GeolocatorDistance();
+    ds.beginCalculateDistance();
+    distanceStream = ds.getDistanceStream();
   }
 
   void onStepCount(StepCount event) {
@@ -88,7 +97,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Pedometer'),
+          title: const Text('Fitness Tracker'),
         ),
         body: Center(
           child: Column(
@@ -96,20 +105,20 @@ class _MyAppState extends State<MyApp> {
             children: <Widget>[
               Text(
                 'Steps Taken',
-                style: TextStyle(fontSize: 30),
+                style: TextStyle(fontSize: 20),
               ),
               Text(
                 _steps,
-                style: TextStyle(fontSize: 60),
+                style: TextStyle(fontSize: 40),
               ),
               Divider(
-                height: 100,
+                height: 75,
                 thickness: 0,
                  color: Colors.black,
               ),
               Text(
                 'Pedestrian Status',
-                style: TextStyle(fontSize: 30),
+                style: TextStyle(fontSize: 20),
               ),
               Icon(
                 _status == 'walking'
@@ -117,14 +126,80 @@ class _MyAppState extends State<MyApp> {
                 : _status == 'stopped'
                 ? Icons.accessibility_new
                 : Icons.error,
-                size: 100,
+                size: 75,
               ),
               Center(
                 child: Text(
                   _status,
                   style: _status == 'walking' || _status == 'stopped'
-                  ? TextStyle(fontSize: 30)
-                  :TextStyle(fontSize: 20, color: Colors.red),
+                  ? TextStyle(fontSize: 20)
+                  :TextStyle(fontSize: 15, color: Colors.red),
+                ),
+              ),
+              Divider(
+                height: 75,
+                thickness: 0,
+                 color: Colors.black,
+              ),
+              Text(
+                'Distance Traveled',
+                style: TextStyle(fontSize: 20),
+              ),
+              StreamBuilder<double>(
+                stream: distanceStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Text(
+                      '${(snapshot.data! * 0.000621371192).toStringAsFixed(2)} miles',
+                      style: const TextStyle(fontSize: 40),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(
+                      'Error: ${snapshot.error}',
+                      style: const TextStyle(fontSize: 15, color: Colors.red),
+                    );
+                  } else {
+                    return const Text(
+                      'Loading Distance...',
+                      style: TextStyle(fontSize: 20),
+                    );
+                  }
+                },
+              ),
+              Divider(
+                height: 75,
+                thickness: 0,
+                 color: Colors.black,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0), // space from screen edges
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.black,
+
+                        ),
+                        child: const Text('Start'),
+                      ),
+                    ),
+                    const SizedBox(width: 16), // space between buttons
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.black,
+
+                        ),
+                        child: const Text('Stop'),
+
+                      ),
+                    ),
+                  ],
                 ),
               )
             ]
