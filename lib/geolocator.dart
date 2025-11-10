@@ -18,17 +18,14 @@ class GeolocatorDistance {
 
 
   void beginCalculateDistance() async {
-    int i = 0;
     Position startingPoint = await _determinePosition();
     await for (Position position in Geolocator.getPositionStream(
       locationSettings: locationSettings,
     )) {
-      if(i%2==0){
-        startingPoint = position;
-      }
+      
       distanceTaken = distanceTaken + Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, position.longitude);
       streamDistance.sink.add(distanceTaken);
-      i++;
+      startingPoint = position;
     } 
   }
   void resetDistanceTaken(){

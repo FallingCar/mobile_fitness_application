@@ -9,9 +9,6 @@ String formatDate(DateTime d){
 }
 
 void main(){
-  GeolocatorDistance ds = GeolocatorDistance();
-  ds.beginCalculateDistance();
-  
   runApp(MyApp());
 }
 
