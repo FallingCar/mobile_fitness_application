@@ -29,6 +29,10 @@ class _MyAppState extends State<MyApp> {
   String _status = '?' , _steps = '?';
   int flag = 0;
   String startSteps = '?';
+  bool isStarted = false;
+  double _startDistance = 0.0;
+  double _currentDistance = 0.0;
+
 
   @override
   void initState() {
@@ -40,14 +44,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onStepCount(StepCount event) {
-    if(flag == 0){
-      startSteps = event.steps.toString();
-      flag = 1;
+    if(isStarted == true){
+      if(flag == 0){
+        startSteps = event.steps.toString();
+        flag = 1;
+      }
+      setState(() {
+        _steps = event.steps.toString();
+        _steps = (int.parse(_steps) - int.parse(startSteps)).toString();
+      });
     }
-    setState(() {
-      _steps = event.steps.toString();
-      _steps = (int.parse(_steps) - int.parse(startSteps)).toString();
-    });
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event){
@@ -149,19 +155,22 @@ class _MyAppState extends State<MyApp> {
                 stream: distanceStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    _currentDistance = snapshot.data!;
+                    double sessionDistance = isStarted
+                        ? (snapshot.data! - _startDistance)
+                        : 0.0;
+
+                    if (sessionDistance < 0) sessionDistance = 0.0; // to fix negetives from appearing
+
                     return Text(
-                      '${(snapshot.data! * 0.000621371192).toStringAsFixed(2)} miles',
+                      '${(sessionDistance * 0.000621371192).toStringAsFixed(2)} miles',
                       style: const TextStyle(fontSize: 40),
                     );
-                  } else if (snapshot.hasError) {
-                    return Text(
-                      'Error: ${snapshot.error}',
-                      style: const TextStyle(fontSize: 15, color: Colors.red),
-                    );
-                  } else {
+                  }
+                  else {
                     return const Text(
-                      'Loading Distance...',
-                      style: TextStyle(fontSize: 20),
+                      'Calculating...',
+                      style: TextStyle(fontSize: 20, color: Colors.grey),
                     );
                   }
                 },
@@ -177,7 +186,12 @@ class _MyAppState extends State<MyApp> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () 
+                        {
+                          isStarted = true;
+                          flag = 0;
+                          _startDistance = _currentDistance;
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.black,
@@ -189,7 +203,11 @@ class _MyAppState extends State<MyApp> {
                     const SizedBox(width: 16), // space between buttons
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () 
+                        {
+                          isStarted = false;
+                          _steps = "0";
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.black,

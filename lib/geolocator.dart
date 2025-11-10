@@ -25,7 +25,6 @@ class GeolocatorDistance {
       if(i%2==0){
         startingPoint = position;
       }
-      // will probably need to return stream or update state
 
       streamDistance.sink.add(Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, startingPoint.longitude));
       i++;
