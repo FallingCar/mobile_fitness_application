@@ -4,6 +4,7 @@ import 'dart:async';
   /// Might need to implement different ways of getting location based on mobile OS.
 
 class GeolocatorDistance {
+  double distanceTaken = 0.0;
   static StreamController<double> streamDistance = StreamController<double>();
   static LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high, // Or other desired accuracy
@@ -25,10 +26,13 @@ class GeolocatorDistance {
       if(i%2==0){
         startingPoint = position;
       }
-
-      streamDistance.sink.add(Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, startingPoint.longitude));
+      distanceTaken = distanceTaken + Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, position.longitude);
+      streamDistance.sink.add(distanceTaken);
       i++;
     } 
+  }
+  void resetDistanceTaken(){
+    distanceTaken = 0.0;
   }
 
 

@@ -205,6 +205,7 @@ class _MyAppState extends State<MyApp> {
                       child: ElevatedButton(
                         onPressed: () 
                         {
+                          ds.resetDistanceTaken();
                           isStarted = false;
                           _steps = "0";
                         },
