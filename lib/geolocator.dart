@@ -8,7 +8,7 @@ class GeolocatorDistance {
   static StreamController<double> streamDistance = StreamController<double>();
   static LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high, // Or other desired accuracy
-    distanceFilter: 9, // Minimum distance (in meters) before an update is triggered
+    distanceFilter: 16, // Minimum distance (in meters) before an update is triggered
   );
 
   // Call to get stream for updating UI
@@ -23,8 +23,8 @@ class GeolocatorDistance {
       locationSettings: locationSettings,
     )) {
       
-      //distanceTaken = distanceTaken + Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, position.longitude);
-      streamDistance.sink.add(startingPoint.latitude);
+      distanceTaken = distanceTaken + Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, position.longitude);
+      streamDistance.sink.add(distanceTaken);
       startingPoint = position;
     } 
   }
