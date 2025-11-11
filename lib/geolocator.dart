@@ -4,10 +4,11 @@ import 'dart:async';
   /// Might need to implement different ways of getting location based on mobile OS.
 
 class GeolocatorDistance {
+  double distanceTaken = 0.0;
   static StreamController<double> streamDistance = StreamController<double>();
   static LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high, // Or other desired accuracy
-    distanceFilter: 3, // Minimum distance (in meters) before an update is triggered
+    distanceFilter: 16, // Minimum distance (in meters) before an update is triggered
   );
 
   // Call to get stream for updating UI
@@ -17,19 +18,18 @@ class GeolocatorDistance {
 
 
   void beginCalculateDistance() async {
-    int i = 0;
     Position startingPoint = await _determinePosition();
     await for (Position position in Geolocator.getPositionStream(
       locationSettings: locationSettings,
     )) {
-      if(i%2==0){
-        startingPoint = position;
-      }
-      // will probably need to return stream or update state
-
-      streamDistance.sink.add(Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, startingPoint.longitude));
-      i++;
+      
+      distanceTaken = distanceTaken + Geolocator.distanceBetween(startingPoint.latitude, startingPoint.longitude, position.latitude, position.longitude);
+      streamDistance.sink.add(distanceTaken);
+      startingPoint = position;
     } 
+  }
+  void resetDistanceTaken(){
+    distanceTaken = 0.0;
   }
 
 
