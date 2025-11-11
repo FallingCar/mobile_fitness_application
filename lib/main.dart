@@ -183,14 +183,15 @@ class _MyAppState extends State<MyApp> {
                   children: [
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () 
-                        {
-                          isStarted = true;
-                          flag = 0;
-                          _startDistance = _currentDistance;
+                        onPressed: () {
+                          setState(() {
+                            isStarted = true;
+                            flag = 0;
+                            _startDistance = _currentDistance;
+                          });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
+                          backgroundColor: !isStarted ? Colors.green : Colors.grey,
                           foregroundColor: Colors.black,
 
                         ),
@@ -200,16 +201,17 @@ class _MyAppState extends State<MyApp> {
                     const SizedBox(width: 16), // space between buttons
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () 
-                        {
-                          ds.resetDistanceTaken();
-                          isStarted = false;
-                          _steps = "0";
+                        onPressed: () {
+                          setState(() {
+                            ds.resetDistanceTaken();
+                            isStarted = false;
+                            _steps = "0";
+                          });
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
+                          backgroundColor: isStarted ? Colors.red : Colors.grey,
                           foregroundColor: Colors.black,
-
+                          
                         ),
                         child: const Text('Stop'),
 
